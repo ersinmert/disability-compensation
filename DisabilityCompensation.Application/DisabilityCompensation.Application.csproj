@@ -16,7 +16,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DisabilityCompensation.Domain\DisabilityCompensation.Domain.csproj" />
-    <ProjectReference Include="..\DisabilityCompensation.Shared\DisabilityCompensation.Shared.csproj" />
+    <ProjectReference Include="..\DisabilityCompensation.Infrastructure\DisabilityCompensation.Infrastructure.csproj" />
+    <ProjectReference Include="..\DisabilityCompensation.Persistence\DisabilityCompensation.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Validations\" />
   </ItemGroup>
 
 </Project>

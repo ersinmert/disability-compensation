@@ -2,17 +2,17 @@
 
 namespace DisabilityCompensation.Shared.Exceptions
 {
-    public class ValidationExceptionCustom : Exception
+    public class CustomValidationException : Exception
     {
         public IEnumerable<BaseValidationError> Errors { get; }
 
-        public ValidationExceptionCustom()
+        public CustomValidationException()
             : base("One or more validation failures have occured.")
         {
             Errors = new List<BaseValidationError>();
         }
 
-        public ValidationExceptionCustom(IEnumerable<BaseValidationError> errors)
+        public CustomValidationException(IEnumerable<BaseValidationError> errors)
             : this()
         {
             Errors = errors;

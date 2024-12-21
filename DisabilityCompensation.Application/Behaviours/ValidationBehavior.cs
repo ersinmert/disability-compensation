@@ -29,7 +29,7 @@ namespace DisabilityCompensation.Application.Behaviours
 
                 if (failures.Any())
                 {
-                    throw new ValidationExceptionCustom(failures);
+                    throw new CustomValidationException(failures);
                 }
             }
 

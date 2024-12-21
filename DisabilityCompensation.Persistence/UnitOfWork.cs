@@ -1,18 +1,28 @@
 ﻿using DisabilityCompensation.Application.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 using DisabilityCompensation.Persistence.Contexts;
+using DisabilityCompensation.Domain.Interfaces;
+using DisabilityCompensation.Domain.Interfaces.IRepositories;
 
 namespace DisabilityCompensation.Persistence
 {
     internal class UnitOfWork : IUnitOfWork
     {
+        private bool _disposed = false;
         private readonly AppDbContext _context;
         private IDbContextTransaction? _transaction;
 
-        public UnitOfWork(AppDbContext context)
+        public UnitOfWork(
+            AppDbContext context,
+            ICompensationRepository compensationRepository,
+            IParameterRepository parameterRepository)
         {
             _context = context;
+            CompensationRepository = compensationRepository;
+            ParameterRepository = parameterRepository;
         }
+
+        #region Methods
 
         public async Task BeginTransactionAsync()
         {
@@ -26,24 +36,48 @@ namespace DisabilityCompensation.Persistence
 
         public async Task CommitAsync()
         {
-            if (_transaction != null)
+            if (_transaction == null)
             {
-                await _transaction.CommitAsync();
+                throw new InvalidOperationException("Transaction has not been started.");
             }
+
+            await _transaction.CommitAsync();
         }
 
         public async Task RollbackAsync()
         {
-            if (_transaction != null)
+            if (_transaction == null)
             {
-                await _transaction.RollbackAsync();
+                throw new InvalidOperationException("Transaction has not been started.");
             }
+
+            await _transaction.RollbackAsync();
         }
 
         public void Dispose()
         {
-            System.GC.SuppressFinalize(this);
-            _transaction?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _transaction?.Dispose();
+                _context.Dispose();
+            }
+
+            _disposed = true;
+        }
+
+        #endregion
+
+        public ICompensationRepository CompensationRepository { get; set; }
+        public IParameterRepository ParameterRepository { get; set; }
     }
+
 }

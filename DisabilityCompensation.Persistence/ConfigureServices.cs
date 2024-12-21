@@ -1,5 +1,8 @@
 ﻿using DisabilityCompensation.Application.Interfaces;
+using DisabilityCompensation.Domain.Interfaces;
+using DisabilityCompensation.Domain.Interfaces.IRepositories;
 using DisabilityCompensation.Persistence.Contexts;
+using DisabilityCompensation.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +18,13 @@ namespace DisabilityCompensation.Persistence
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<ICompensationRepository, CompensationRepository>();
+            services.AddScoped<IParameterRepository, ParameterRepository>();
+            services.AddScoped<IClaimantRepository, ClaimantRepository>();
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
+            services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IExpenseRepository, ExpenseRepository>();
 
             return services;
         }

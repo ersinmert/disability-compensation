@@ -2,7 +2,7 @@
 using DisabilityCompensation.Shared.Exceptions;
 using System.Text.Json;
 
-namespace DisabilityCompensation.API.Extensions.Middleware
+namespace DisabilityCompensation.API.Middleware
 {
     public class ValidationMiddleware
     {
@@ -19,7 +19,7 @@ namespace DisabilityCompensation.API.Extensions.Middleware
             {
                 await _next.Invoke(context);
             }
-            catch (ValidationExceptionCustom ex)
+            catch (CustomValidationException ex)
             {
                 context.Response.ContentType = "application/json";
                 await JsonSerializer.SerializeAsync(context.Response.Body, new BaseResponse<object> { Message = "Validation Errors", ValidationErrors = ex.Errors });

@@ -1,6 +1,6 @@
 using DisabilityCompensation.Persistence;
 using DisabilityCompensation.Application;
-using DisabilityCompensation.API.Extensions.Middleware;
+using DisabilityCompensation.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 

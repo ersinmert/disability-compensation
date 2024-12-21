@@ -1,4 +1,4 @@
-﻿namespace DisabilityCompensation.API.Extensions.Middleware
+﻿namespace DisabilityCompensation.API.Middleware
 {
     public static class MiddlewareExtension
     {
