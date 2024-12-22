@@ -5,5 +5,6 @@ namespace DisabilityCompensation.Application.Interfaces
 {
     public interface IParameterRepository : IGenericRepository<Parameter>
     {
+        Task<List<Parameter>> GetParametersAsync(List<string>? codes);
     }
 }

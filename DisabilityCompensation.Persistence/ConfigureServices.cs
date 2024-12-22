@@ -19,6 +19,7 @@ namespace DisabilityCompensation.Persistence
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<ICompensationRepository, CompensationRepository>();
             services.AddScoped<IParameterRepository, ParameterRepository>();
             services.AddScoped<IClaimantRepository, ClaimantRepository>();

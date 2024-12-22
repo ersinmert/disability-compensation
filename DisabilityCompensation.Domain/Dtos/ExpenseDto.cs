@@ -1,14 +1,14 @@
 ﻿using DisabilityCompensation.Shared.Dtos.Bases;
 
-namespace DisabilityCompensation.Shared.Dtos
+namespace DisabilityCompensation.Application.Dtos.Entity
 {
     public class ExpenseDto : BaseDto
     {
         public Guid CompensationId { get; set; }
-        public required string ExpenseType { get; set; }
+        public string? ExpenseType { get; set; }
         public string? ReferenceNo { get; set; }
-        public required DateTime Date { get; set; }
-        public required decimal Amount { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
         public string? FilePath { get; set; }
     }
 }

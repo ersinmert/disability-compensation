@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DisabilityCompensation.Application.Commands.Parameters;
+using DisabilityCompensation.Application.Queries.Parameters;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DisabilityCompensation.API.Controllers
 {
@@ -6,17 +9,25 @@ namespace DisabilityCompensation.API.Controllers
     [ApiController]
     public class ParameterController : ControllerBase
     {
-        private ILogger<ParameterController> _logger;
+        private readonly IMediator _mediator;
 
-        public ParameterController(ILogger<ParameterController> logger)
+        public ParameterController(IMediator mediator)
         {
-            _logger = logger;
+            _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody] GetParameterQuery request)
         {
-            return Ok();
+            var response = await _mediator.Send(request);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] AddParametersCommand request)
+        {
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
     }
 }

@@ -1,10 +1,7 @@
-﻿using DisabilityCompensation.Shared.Dtos.Bases;
-
-namespace DisabilityCompensation.Shared.Dtos
+﻿namespace DisabilityCompensation.Application.Dtos.Compensation.AddCompensation
 {
-    public class EventDto : BaseDto
+    public class EventRequest
     {
-        public Guid CompensationId { get; set; }
         public string? EventType { get; set; }
         public DateTime EventDate { get; set; }
         public DateTime ExaminationDate { get; set; }

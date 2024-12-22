@@ -1,6 +1,5 @@
 ﻿using DisabilityCompensation.Application.Commands.Compensations;
 using DisabilityCompensation.Application.Queries.Compensations;
-using DisabilityCompensation.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +17,9 @@ namespace DisabilityCompensation.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get([FromRoute] GetCompensationQuery request)
         {
-            var response = await _mediator.Send(new GetCompensationQuery { CompensationId = id });
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
 
@@ -32,9 +31,9 @@ namespace DisabilityCompensation.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CompensationDto compensation)
+        public async Task<IActionResult> Add([FromBody] AddCompensationCommand compensationRequest)
         {
-            var response = await _mediator.Send(new AddCompensationCommand { Compensation = compensation });
+            var response = await _mediator.Send(compensationRequest);
             return Ok(response);
         }
     }

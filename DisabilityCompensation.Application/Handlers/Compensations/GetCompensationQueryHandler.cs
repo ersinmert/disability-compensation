@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
+using DisabilityCompensation.Application.Dtos.Entity;
 using DisabilityCompensation.Application.Queries.Compensations;
 using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IServices;
-using DisabilityCompensation.Shared.Dtos;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
 
 namespace DisabilityCompensation.Application.Handlers.Compensations
 {
-    public class GetCompensationHandler : IRequestHandler<GetCompensationQuery, BaseResponse<CompensationDto>>
+    public class GetCompensationQueryHandler : IRequestHandler<GetCompensationQuery, BaseResponse<CompensationDto>>
     {
         private readonly ICompensationService _compensationService;
         private readonly IMapper _mapper;
 
-        public GetCompensationHandler(
+        public GetCompensationQueryHandler(
             ICompensationService compensationService,
             IMapper mapper)
         {
@@ -24,12 +24,11 @@ namespace DisabilityCompensation.Application.Handlers.Compensations
         public async Task<BaseResponse<CompensationDto>> Handle(GetCompensationQuery request, CancellationToken cancellationToken)
         {
             var id = request.CompensationId;
-            var compensation = await _compensationService.GetByIdAsync(id);
-            var compensationDto = _mapper.Map<CompensationDto>(compensation);
+            var compensation = await _compensationService.GetByIdAsync<CompensationDto>(id);
 
             return new BaseResponse<CompensationDto>
             {
-                Data = compensationDto,
+                Data = compensation,
                 Succcess = true
             };
         }

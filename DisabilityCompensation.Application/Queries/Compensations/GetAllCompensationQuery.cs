@@ -1,4 +1,4 @@
-﻿using DisabilityCompensation.Shared.Dtos;
+﻿using DisabilityCompensation.Application.Dtos.Entity;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
 

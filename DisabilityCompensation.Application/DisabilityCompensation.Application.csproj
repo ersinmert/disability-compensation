@@ -11,6 +11,8 @@
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.34" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.38" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
   </ItemGroup>
 
@@ -18,10 +20,6 @@
     <ProjectReference Include="..\DisabilityCompensation.Domain\DisabilityCompensation.Domain.csproj" />
     <ProjectReference Include="..\DisabilityCompensation.Infrastructure\DisabilityCompensation.Infrastructure.csproj" />
     <ProjectReference Include="..\DisabilityCompensation.Persistence\DisabilityCompensation.Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Validations\" />
   </ItemGroup>
 
 </Project>

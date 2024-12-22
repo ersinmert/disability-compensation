@@ -10,6 +10,7 @@ namespace DisabilityCompensation.Persistence.Contexts
 
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Claimant> Claimants { get; set; }
         public DbSet<Compensation> Compensations { get; set; }
         public DbSet<Document> Documents { get; set; }

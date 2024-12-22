@@ -15,11 +15,13 @@ namespace DisabilityCompensation.Persistence
         public UnitOfWork(
             AppDbContext context,
             ICompensationRepository compensationRepository,
-            IParameterRepository parameterRepository)
+            IParameterRepository parameterRepository,
+            IAuthRepository authRepository)
         {
             _context = context;
             CompensationRepository = compensationRepository;
             ParameterRepository = parameterRepository;
+            AuthRepository = authRepository;
         }
 
         #region Methods
@@ -78,6 +80,7 @@ namespace DisabilityCompensation.Persistence
 
         public ICompensationRepository CompensationRepository { get; set; }
         public IParameterRepository ParameterRepository { get; set; }
+        public IAuthRepository AuthRepository { get; set; }
     }
 
 }

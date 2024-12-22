@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DisabilityCompensation.Application.Commands.Compensations;
+using DisabilityCompensation.Application.Dtos.Entity;
 using DisabilityCompensation.Domain.Entities;
 using DisabilityCompensation.Domain.Interfaces.IServices;
 using DisabilityCompensation.Shared.Dtos.Bases;
@@ -22,8 +23,7 @@ namespace DisabilityCompensation.Application.Handlers.Compensations
 
         public async Task<BaseResponse<Guid>> Handle(AddCompensationCommand request, CancellationToken cancellationToken)
         {
-            var compensationDto = request.Compensation;
-            var compensation = _mapper.Map<Compensation>(compensationDto);
+            var compensation = _mapper.Map<CompensationDto>(request);
             await _compensationService.AddAsync(compensation);
 
             return new BaseResponse<Guid>

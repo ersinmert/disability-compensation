@@ -20,7 +20,9 @@ namespace DisabilityCompensation.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICompensationService, CompensationService>();
+            services.AddScoped<IParameterService, ParameterService>();
         }
     }
 }

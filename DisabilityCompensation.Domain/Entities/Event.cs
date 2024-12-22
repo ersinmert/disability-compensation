@@ -1,5 +1,8 @@
-﻿namespace DisabilityCompensation.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DisabilityCompensation.Domain.Entities
 {
+    [Table("Event")]
     public class Event : BaseEntity
     {
         public Guid CompensationId { get; set; }

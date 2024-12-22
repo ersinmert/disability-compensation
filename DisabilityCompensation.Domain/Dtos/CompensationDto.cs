@@ -1,11 +1,13 @@
-﻿using DisabilityCompensation.Shared.Dtos.Bases;
+﻿using DisabilityCompensation.Domain.ValueObjects;
+using DisabilityCompensation.Shared.Dtos.Bases;
 
-namespace DisabilityCompensation.Shared.Dtos
+namespace DisabilityCompensation.Application.Dtos.Entity
 {
     public class CompensationDto : BaseDto
     {
         public string? PredefinedNote { get; set; }
         public string? Note { get; set; }
+        public CompensationStatus Status { get; set; }
 
         public ClaimantDto? Claimant { get; set; }
         public EventDto? Event { get; set; }

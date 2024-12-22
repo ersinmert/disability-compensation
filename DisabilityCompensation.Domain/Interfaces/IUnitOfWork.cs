@@ -12,5 +12,6 @@ namespace DisabilityCompensation.Domain.Interfaces
 
         ICompensationRepository CompensationRepository { get; }
         IParameterRepository ParameterRepository { get; }
+        IAuthRepository AuthRepository { get; set; }
     }
 }

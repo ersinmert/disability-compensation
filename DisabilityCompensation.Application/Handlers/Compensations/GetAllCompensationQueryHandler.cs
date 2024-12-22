@@ -1,18 +1,18 @@
 ﻿using AutoMapper;
+using DisabilityCompensation.Application.Dtos.Entity;
 using DisabilityCompensation.Application.Queries.Compensations;
 using DisabilityCompensation.Domain.Interfaces.IServices;
-using DisabilityCompensation.Shared.Dtos;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
 
 namespace DisabilityCompensation.Application.Handlers.Compensations
 {
-    public class GetAllCompensationHandler : IRequestHandler<GetAllCompensationQuery, BaseResponse<IEnumerable<CompensationDto>>>
+    public class GetAllCompensationQueryHandler : IRequestHandler<GetAllCompensationQuery, BaseResponse<IEnumerable<CompensationDto>>>
     {
         private readonly IMapper _mapper;
         private readonly ICompensationService _compensationService;
 
-        public GetAllCompensationHandler(
+        public GetAllCompensationQueryHandler(
             ICompensationService compensationService,
             IMapper mapper)
         {
