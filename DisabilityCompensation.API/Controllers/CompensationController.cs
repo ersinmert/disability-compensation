@@ -1,12 +1,14 @@
 ﻿using DisabilityCompensation.Application.Commands.Compensations;
 using DisabilityCompensation.Application.Queries.Compensations;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DisabilityCompensation.API.Controllers
 {
     [Route("api/compensations")]
     [ApiController]
+    [Authorize]
     public class CompensationController : ControllerBase
     {
         private readonly IMediator _mediator;

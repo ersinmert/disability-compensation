@@ -1,12 +1,14 @@
 ﻿using DisabilityCompensation.Application.Commands.Parameters;
 using DisabilityCompensation.Application.Queries.Parameters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DisabilityCompensation.API.Controllers
 {
     [Route("api/parameters")]
     [ApiController]
+    [Authorize]
     public class ParameterController : ControllerBase
     {
         private readonly IMediator _mediator;
