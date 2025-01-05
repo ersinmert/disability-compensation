@@ -399,4 +399,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+/DisabilityCompensation.API/uploads/
+
 # End of https://www.toptal.com/developers/gitignore/api/csharp

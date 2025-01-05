@@ -12,6 +12,14 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using DisabilityCompensation.Shared.Configurations;
 using Microsoft.OpenApi.Models;
+using DisabilityCompensation.Domain.Interfaces;
+using DisabilityCompensation.Infrastructure.FileUploaders;
+using Microsoft.AspNetCore.Hosting;
+using DisabilityCompensation.Domain.Interfaces.IValidators;
+using DisabilityCompensation.Domain.Validators.FileValidators;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 
 namespace DisabilityCompensation.Application
 {
@@ -25,17 +33,28 @@ namespace DisabilityCompensation.Application
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddHttpContextAccessor();
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
+            services.AddConfigs(configuration);
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<ICompensationService, CompensationService>();
             services.AddScoped<IParameterService, ParameterService>();
+            services.AddScoped<IFileUploaderService, FileUploaderService>();
+
+            services.AddScoped<IFileValidator, MimeTypeValidator>();
+            services.AddScoped<IFileValidator, FileExtensionValidator>();
+            services.AddScoped<IFileValidator, MaxFileSizeValidator>();
+            services.AddScoped<ICompositeFileValidator, CompositeFileValidator>();
+
+            services.AddScoped<LocalFileUploader>();
+            services.AddScoped<IFileUploader>(provider => FileUploadFactory.CreateUploader(provider, configuration));
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
+        private static void AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
 
@@ -58,7 +77,7 @@ namespace DisabilityCompensation.Application
             });
         }
 
-        public static void AddSwagger(this IServiceCollection services)
+        private static void AddSwagger(this IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
             {
@@ -86,6 +105,28 @@ namespace DisabilityCompensation.Application
                         Array.Empty<string>()
                     }
                 });
+            });
+        }
+
+        private static void AddConfigs(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<FileUploadSettings>(configuration.GetSection(nameof(FileUploadSettings)));
+            services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
+            services.Configure<FileValidatorSettings>(configuration.GetSection(nameof(FileValidatorSettings)));
+        }
+
+        public static void UseStaticFiles(this WebApplication app)
+        {
+            var fileUploadSettings = app.Services.GetRequiredService<IOptions<FileUploadSettings>>().Value;
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), fileUploadSettings.LocalTargetPath!);
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(uploadPath),
+                RequestPath = fileUploadSettings.RequestPath
             });
         }
     }

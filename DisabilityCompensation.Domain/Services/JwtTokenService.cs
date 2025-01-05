@@ -23,7 +23,7 @@ namespace DisabilityCompensation.Domain.Services
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString())
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings!.SecretKey!));

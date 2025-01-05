@@ -33,7 +33,7 @@ namespace DisabilityCompensation.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddCompensationCommand compensationRequest)
+        public async Task<IActionResult> Add([FromForm] AddCompensationCommand compensationRequest)
         {
             var response = await _mediator.Send(compensationRequest);
             return Ok(response);

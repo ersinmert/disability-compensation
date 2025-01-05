@@ -19,10 +19,10 @@ namespace DisabilityCompensation.Application.Mapping
             CreateMap<Document, DocumentDto>().ReverseMap();
             CreateMap<Claimant, ClaimantDto>().ReverseMap();
             CreateMap<AddCompensationCommand, CompensationDto>().ReverseMap();
-            CreateMap<EventRequest, Event>().ReverseMap();
-            CreateMap<ExpenseRequest, Expense>().ReverseMap();
-            CreateMap<DocumentRequest, Document>().ReverseMap();
-            CreateMap<ClaimantRequest, Claimant>().ReverseMap();
+            CreateMap<EventRequest, EventDto>().ReverseMap();
+            CreateMap<ExpenseRequest, ExpenseDto>().ReverseMap();
+            CreateMap<DocumentRequest, DocumentDto>().ReverseMap();
+            CreateMap<ClaimantRequest, ClaimantDto>().ReverseMap();
         }
     }
 }

@@ -1,6 +1,9 @@
 using DisabilityCompensation.Persistence;
 using DisabilityCompensation.Application;
 using DisabilityCompensation.API.Middleware;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
+using DisabilityCompensation.Shared.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStaticFiles();
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 app.UseAuthentication();
 app.UseAuthorization();
