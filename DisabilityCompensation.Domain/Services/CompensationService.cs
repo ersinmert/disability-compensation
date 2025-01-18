@@ -5,7 +5,7 @@ using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IRepositories;
 using DisabilityCompensation.Domain.Interfaces.IServices;
 using DisabilityCompensation.Shared.Dtos;
-using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
 namespace DisabilityCompensation.Domain.Services
 {
@@ -37,6 +37,11 @@ namespace DisabilityCompensation.Domain.Services
             await _unitOfWork.SaveChangesAsync();
 
             return compensationDto.Id;
+        }
+
+        public override async Task<IEnumerable<Compensation>> FindAsync(Expression<Func<Compensation, bool>> predicate, bool noTracking = false)
+        {
+            return await _unitOfWork.CompensationRepository.GetCompensationsAsync(predicate, noTracking);
         }
 
         private async Task UploadDocumentFiles(List<DocumentDto>? documents)
