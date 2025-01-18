@@ -6,5 +6,6 @@ namespace DisabilityCompensation.Application.Dtos.Auth
     {
         public UserDto? User { get; set; }
         public string? Token { get; set; }
+        public List<string>? Authorities { get; set; }
     }
 }

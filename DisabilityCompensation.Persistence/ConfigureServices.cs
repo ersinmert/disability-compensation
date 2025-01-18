@@ -26,6 +26,8 @@ namespace DisabilityCompensation.Persistence
             services.AddScoped<IDocumentRepository, DocumentRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<IUserAuthorityRepository, UserAuthorityRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

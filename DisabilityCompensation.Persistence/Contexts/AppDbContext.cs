@@ -23,5 +23,7 @@ namespace DisabilityCompensation.Persistence.Contexts
         public DbSet<Event> Events { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Parameter> Parameters { get; set; }
+        public DbSet<Authority> Authorities { get; set; }
+        public DbSet<UserAuthority> UserAuthorities { get; set; }
     }
 }

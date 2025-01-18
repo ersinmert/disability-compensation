@@ -1,13 +1,8 @@
 using DisabilityCompensation.Persistence;
 using DisabilityCompensation.Application;
 using DisabilityCompensation.API.Middleware;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
-using DisabilityCompensation.Shared.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
 
 builder.Services.AddInjectionApplication(builder.Configuration);
 builder.Services.AddInjectionPersistence(builder.Configuration);

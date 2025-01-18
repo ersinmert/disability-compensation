@@ -10,14 +10,17 @@ namespace DisabilityCompensation.Application.Handlers.Auth
     public class AuthLoginQueryHandler : IRequestHandler<AuthLoginQuery, BaseResponse<LoginResponseDto>>
     {
         private readonly IAuthService _authService;
+        private readonly IUserAuthorityService _userAuthorityService;
         private readonly ITokenService _tokenService;
 
         public AuthLoginQueryHandler(
             IAuthService authService,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IUserAuthorityService userAuthorityService)
         {
             _authService = authService;
             _tokenService = tokenService;
+            _userAuthorityService = userAuthorityService;
         }
 
         public async Task<BaseResponse<LoginResponseDto>> Handle(AuthLoginQuery request, CancellationToken cancellationToken)
@@ -28,13 +31,15 @@ namespace DisabilityCompensation.Application.Handlers.Auth
                 throw new NotFoundException("Kullanıcı veya şifre hatalı!");
             }
             var token = _tokenService.GenerateToken(user!.Id);
+            var authorities = await _userAuthorityService.GetAuthoritiesAsync(user.Id);
 
             return new BaseResponse<LoginResponseDto>
             {
                 Data = new LoginResponseDto
                 {
                     Token = token,
-                    User = user
+                    User = user,
+                    Authorities = authorities
                 },
                 Succcess = true
             };

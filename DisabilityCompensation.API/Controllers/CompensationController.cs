@@ -1,5 +1,7 @@
-﻿using DisabilityCompensation.Application.Commands.Compensations;
+﻿using DisabilityCompensation.Application.Attributes;
+using DisabilityCompensation.Application.Commands.Compensations;
 using DisabilityCompensation.Application.Queries.Compensations;
+using DisabilityCompensation.Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ namespace DisabilityCompensation.API.Controllers
     [Route("api/compensations")]
     [ApiController]
     [Authorize]
+    [Authority(Authority.DisabilityCompensation)]
     public class CompensationController : ControllerBase
     {
         private readonly IMediator _mediator;

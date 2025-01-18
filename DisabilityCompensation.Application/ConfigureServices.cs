@@ -14,7 +14,6 @@ using DisabilityCompensation.Shared.Configurations;
 using Microsoft.OpenApi.Models;
 using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Infrastructure.FileUploaders;
-using Microsoft.AspNetCore.Hosting;
 using DisabilityCompensation.Domain.Interfaces.IValidators;
 using DisabilityCompensation.Domain.Validators.FileValidators;
 using Microsoft.AspNetCore.Builder;
@@ -27,7 +26,10 @@ namespace DisabilityCompensation.Application
     {
         public static void AddInjectionApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddControllers();
+
             services.AddSwagger();
+            services.AddAuthorization();
             services.AddAuthenticationService(configuration);
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
@@ -39,19 +41,30 @@ namespace DisabilityCompensation.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 
             services.AddConfigs(configuration);
+            AddServices(services);
+            AddValidators(services);
+
+            services.AddScoped<LocalFileUploader>();
+            services.AddScoped<IFileUploader>(provider => FileUploadFactory.CreateUploader(provider, configuration));
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<ICompensationService, CompensationService>();
             services.AddScoped<IParameterService, ParameterService>();
             services.AddScoped<IFileUploaderService, FileUploaderService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserAuthorityService, UserAuthorityService>();
+        }
 
+        private static void AddValidators(IServiceCollection services)
+        {
             services.AddScoped<IFileValidator, MimeTypeValidator>();
             services.AddScoped<IFileValidator, FileExtensionValidator>();
             services.AddScoped<IFileValidator, MaxFileSizeValidator>();
             services.AddScoped<ICompositeFileValidator, CompositeFileValidator>();
-
-            services.AddScoped<LocalFileUploader>();
-            services.AddScoped<IFileUploader>(provider => FileUploadFactory.CreateUploader(provider, configuration));
         }
 
         private static void AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
