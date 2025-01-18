@@ -26,9 +26,9 @@ namespace DisabilityCompensation.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> Search([FromQuery] SearchCompensationQuery request)
         {
-            var response = await _mediator.Send(new GetAllCompensationQuery());
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
 

@@ -1,9 +1,9 @@
-﻿using DisabilityCompensation.Domain.Entities;
+﻿using DisabilityCompensation.Domain.Dtos;
+using DisabilityCompensation.Domain.Entities;
 using DisabilityCompensation.Domain.Interfaces.IRepositories;
 using DisabilityCompensation.Persistence.Contexts;
 using DisabilityCompensation.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace DisabilityCompensation.Persistence.Repositories
 {
@@ -21,6 +21,7 @@ namespace DisabilityCompensation.Persistence.Repositories
                             .Include(x => x.Event)
                             .Include(x => x.Documents)
                             .Include(x => x.Expenses)
+                            .Include(x => x.CreatedByUser)
                             .Where(x => x.Id == id);
 
             return noTracking
@@ -28,21 +29,37 @@ namespace DisabilityCompensation.Persistence.Repositories
                 : await query.FirstOrDefaultAsync();
         }
 
-        public async Task<IList<Compensation>> GetCompensationsAsync(Expression<Func<Compensation, bool>> predicate, bool noTracking = false)
+        public async Task<PagedResult<Compensation>> SearchCompensationsAsync(SearchCompensationDto search)
         {
+            var startDate = search.Date?.ToUniversalTime().Date;
+            var endDate = startDate?.AddDays(1);
             var query = _context.Compensations
                 .Include(x => x.Claimant)
                 .Include(x => x.Event)
                 .Include(x => x.Documents)
                 .Include(x => x.Expenses)
-                .Where(predicate);
+                .Include(x => x.CreatedByUser)
+                .Where(x => x.IsActive)
+                .WhereIf(search.Status != null, x => x.Status == search.Status)
+                .WhereIf(search.Date != null && startDate != null && endDate != null, x =>
+                    startDate <= x.CreatedDate
+                    &&
+                    x.CreatedDate < endDate);
 
-            if (noTracking)
+            var totalCount = await query.CountAsync();
+            var data = await query.OrderByDescending(x => x.CreatedDate)
+                .Skip((search.Page - 1) * search.PageSize)
+                .Take(search.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<Compensation>
             {
-                query = query.AsNoTracking();
-            }
-
-            return await query.ToListAsync();
+                Items = data,
+                Page = search.Page,
+                PageSize = search.PageSize,
+                TotalRecords = totalCount,
+                TotalPage = (int)Math.Ceiling((double)totalCount / search.PageSize)
+            };
         }
     }
 }

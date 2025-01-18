@@ -1,4 +1,5 @@
 ﻿using DisabilityCompensation.Domain.Entities;
+using DisabilityCompensation.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace DisabilityCompensation.Persistence.Contexts
@@ -8,6 +9,11 @@ namespace DisabilityCompensation.Persistence.Contexts
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new CompensationConfiguration());
         }
 
         public DbSet<User> Users { get; set; }

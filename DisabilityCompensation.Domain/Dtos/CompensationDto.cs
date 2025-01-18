@@ -1,4 +1,5 @@
-﻿using DisabilityCompensation.Domain.ValueObjects;
+﻿using DisabilityCompensation.Domain.Dtos;
+using DisabilityCompensation.Domain.ValueObjects;
 using DisabilityCompensation.Shared.Dtos.Bases;
 
 namespace DisabilityCompensation.Application.Dtos.Entity
@@ -11,7 +12,7 @@ namespace DisabilityCompensation.Application.Dtos.Entity
 
         public ClaimantDto? Claimant { get; set; }
         public EventDto? Event { get; set; }
-
+        public UserDto? CreatedByUser { get; set; }
         public List<ExpenseDto>? Expenses { get; set; }
         public List<DocumentDto>? Documents { get; set; }
     }

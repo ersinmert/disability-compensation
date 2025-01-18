@@ -10,5 +10,11 @@ namespace DisabilityCompensation.Domain.Entities
         public string? Surname { get; set; }
         public string? Password { get; set; }
         public bool IsAdmin { get; set; }
+
+        #region Relations
+        
+        public List<Compensation>? Compensations { get; set; } 
+
+        #endregion
     }
 }

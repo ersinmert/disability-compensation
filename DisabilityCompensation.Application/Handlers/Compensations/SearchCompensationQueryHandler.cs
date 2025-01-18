@@ -1,18 +1,19 @@
 ﻿using AutoMapper;
 using DisabilityCompensation.Application.Dtos.Entity;
 using DisabilityCompensation.Application.Queries.Compensations;
+using DisabilityCompensation.Domain.Dtos;
 using DisabilityCompensation.Domain.Interfaces.IServices;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
 
 namespace DisabilityCompensation.Application.Handlers.Compensations
 {
-    public class GetAllCompensationQueryHandler : IRequestHandler<GetAllCompensationQuery, BaseResponse<IEnumerable<CompensationDto>>>
+    public class SearchCompensationQueryHandler : IRequestHandler<SearchCompensationQuery, BaseResponse<PagedResultDto<CompensationDto>>>
     {
         private readonly IMapper _mapper;
         private readonly ICompensationService _compensationService;
 
-        public GetAllCompensationQueryHandler(
+        public SearchCompensationQueryHandler(
             ICompensationService compensationService,
             IMapper mapper)
         {
@@ -20,14 +21,14 @@ namespace DisabilityCompensation.Application.Handlers.Compensations
             _compensationService = compensationService;
         }
 
-        public async Task<BaseResponse<IEnumerable<CompensationDto>>> Handle(GetAllCompensationQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<PagedResultDto<CompensationDto>>> Handle(SearchCompensationQuery request, CancellationToken cancellationToken)
         {
-            var compensations = await _compensationService.FindAsync(x => x.IsActive);
-            var compensationDtos = _mapper.Map<List<CompensationDto>>(compensations);
+            var search = _mapper.Map<SearchCompensationDto>(request);
+            var compensations = await _compensationService.SearchPagedAsync(search);
 
-            return new BaseResponse<IEnumerable<CompensationDto>>
+            return new BaseResponse<PagedResultDto<CompensationDto>>
             {
-                Data = compensationDtos,
+                Data = compensations,
                 Succcess = true
             };
         }

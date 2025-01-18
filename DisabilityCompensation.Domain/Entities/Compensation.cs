@@ -16,6 +16,7 @@ namespace DisabilityCompensation.Domain.Entities
         public required Event Event { get; set; }
         public List<Expense>? Expenses { get; set; }
         public List<Document>? Documents { get; set; }
+        public User? CreatedByUser { get; set; }
 
         #endregion
     }

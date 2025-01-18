@@ -2,6 +2,7 @@
 using DisabilityCompensation.Application.Commands.Compensations;
 using DisabilityCompensation.Application.Dtos.Compensation.AddCompensation;
 using DisabilityCompensation.Application.Dtos.Entity;
+using DisabilityCompensation.Application.Queries.Compensations;
 using DisabilityCompensation.Domain.Dtos;
 using DisabilityCompensation.Domain.Entities;
 
@@ -11,6 +12,7 @@ namespace DisabilityCompensation.Application.Mapping
     {
         public MappingProfile()
         {
+            CreateMap(typeof(PagedResult<>), typeof(PagedResultDto<>));
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Compensation, CompensationDto>().ReverseMap();
             CreateMap<Parameter, ParameterDto>().ReverseMap();
@@ -23,6 +25,7 @@ namespace DisabilityCompensation.Application.Mapping
             CreateMap<ExpenseRequest, ExpenseDto>().ReverseMap();
             CreateMap<DocumentRequest, DocumentDto>().ReverseMap();
             CreateMap<ClaimantRequest, ClaimantDto>().ReverseMap();
+            CreateMap<SearchCompensationDto, SearchCompensationQuery>().ReverseMap();
         }
     }
 }

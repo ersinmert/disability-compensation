@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DisabilityCompensation.Application.Dtos.Entity;
+using DisabilityCompensation.Domain.Dtos;
 using DisabilityCompensation.Domain.Entities;
 using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IRepositories;
@@ -39,9 +40,10 @@ namespace DisabilityCompensation.Domain.Services
             return compensationDto.Id;
         }
 
-        public override async Task<IEnumerable<Compensation>> FindAsync(Expression<Func<Compensation, bool>> predicate, bool noTracking = false)
+        public async Task<PagedResultDto<CompensationDto>> SearchPagedAsync(SearchCompensationDto search)
         {
-            return await _unitOfWork.CompensationRepository.GetCompensationsAsync(predicate, noTracking);
+            var data = await _unitOfWork.CompensationRepository.SearchCompensationsAsync(search);
+            return _mapper.Map<PagedResultDto<CompensationDto>>(data);
         }
 
         private async Task UploadDocumentFiles(List<DocumentDto>? documents)

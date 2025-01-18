@@ -1,10 +1,10 @@
-﻿using DisabilityCompensation.Domain.Entities;
-using System.Linq.Expressions;
+﻿using DisabilityCompensation.Domain.Dtos;
+using DisabilityCompensation.Domain.Entities;
 
 namespace DisabilityCompensation.Domain.Interfaces.IRepositories
 {
     public interface ICompensationRepository : IGenericRepository<Compensation>
     {
-        Task<IList<Compensation>> GetCompensationsAsync(Expression<Func<Compensation, bool>> predicate, bool noTracking = false);
+        Task<PagedResult<Compensation>> SearchCompensationsAsync(SearchCompensationDto search);
     }
 }

@@ -30,6 +30,7 @@ namespace DisabilityCompensation.Application.Handlers.Compensations
         {
             var userClaim = _httpContextAccessor.HttpContext.GetClaims();
             var compensation = _mapper.Map<CompensationDto>(request);
+            compensation.Status = Domain.ValueObjects.CompensationStatus.Pending;
             await _compensationService.AddAsync(compensation, userClaim);
 
             return new BaseResponse<Guid>
