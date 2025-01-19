@@ -57,6 +57,7 @@ namespace DisabilityCompensation.Application
             services.AddScoped<IFileUploaderService, FileUploaderService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserAuthorityService, UserAuthorityService>();
+            services.AddScoped<IAuthorityService, AuthorityService>();
         }
 
         private static void AddValidators(IServiceCollection services)

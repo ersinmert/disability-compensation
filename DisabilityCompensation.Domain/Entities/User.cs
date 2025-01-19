@@ -12,8 +12,9 @@ namespace DisabilityCompensation.Domain.Entities
         public bool IsAdmin { get; set; }
 
         #region Relations
-        
-        public List<Compensation>? Compensations { get; set; } 
+
+        public List<Compensation>? Compensations { get; set; }
+        public List<UserAuthority>? UserAuthorities { get; set; }
 
         #endregion
     }
