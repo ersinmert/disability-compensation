@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DisabilityCompensation.Application.Dtos.Entity;
 using DisabilityCompensation.Application.Queries.Compensations;
-using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IServices;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;

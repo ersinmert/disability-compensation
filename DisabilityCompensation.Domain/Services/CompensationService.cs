@@ -42,7 +42,7 @@ namespace DisabilityCompensation.Domain.Services
 
         public async Task<PagedResultDto<CompensationDto>> SearchPagedAsync(SearchCompensationDto search)
         {
-            var data = await _unitOfWork.CompensationRepository.SearchCompensationsAsync(search);
+            var data = await _unitOfWork.CompensationRepository.SearchPagedAsync(search);
             return _mapper.Map<PagedResultDto<CompensationDto>>(data);
         }
 

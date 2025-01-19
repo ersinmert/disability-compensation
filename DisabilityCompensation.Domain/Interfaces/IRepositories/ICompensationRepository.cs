@@ -5,6 +5,6 @@ namespace DisabilityCompensation.Domain.Interfaces.IRepositories
 {
     public interface ICompensationRepository : IGenericRepository<Compensation>
     {
-        Task<PagedResult<Compensation>> SearchCompensationsAsync(SearchCompensationDto search);
+        Task<PagedResult<Compensation>> SearchPagedAsync(SearchCompensationDto search);
     }
 }

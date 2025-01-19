@@ -100,7 +100,7 @@ namespace DisabilityCompensation.Persistence.Repositories
         {
             var property = entity.GetType().GetProperty("IsActive");
 
-            var propertyValue = (int?)property?.GetValue(entity);
+            var propertyValue = (bool?)property?.GetValue(entity);
 
             if (property != null && propertyValue.HasValue)
             {

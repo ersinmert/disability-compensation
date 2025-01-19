@@ -1,6 +1,5 @@
 ﻿using DisabilityCompensation.Shared.Dtos;
 using Microsoft.AspNetCore.Http;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace DisabilityCompensation.Shared.Extensions

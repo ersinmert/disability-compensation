@@ -29,7 +29,7 @@ namespace DisabilityCompensation.Persistence.Repositories
                 : await query.FirstOrDefaultAsync();
         }
 
-        public async Task<PagedResult<Compensation>> SearchCompensationsAsync(SearchCompensationDto search)
+        public async Task<PagedResult<Compensation>> SearchPagedAsync(SearchCompensationDto search)
         {
             var startDate = search.Date?.ToUniversalTime().Date;
             var endDate = startDate?.AddDays(1);
