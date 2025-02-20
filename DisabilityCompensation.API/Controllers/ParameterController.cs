@@ -10,7 +10,6 @@ namespace DisabilityCompensation.API.Controllers
     [Route("api/parameters")]
     [ApiController]
     [Authorize]
-    [Admin]
     public class ParameterController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,6 +27,7 @@ namespace DisabilityCompensation.API.Controllers
         }
 
         [HttpPost]
+        [Admin]
         public async Task<IActionResult> Add([FromBody] AddParametersCommand request)
         {
             var response = await _mediator.Send(request);

@@ -2,6 +2,7 @@
 using DisabilityCompensation.Application.Commands.Compensations;
 using DisabilityCompensation.Application.Queries.Compensations;
 using DisabilityCompensation.Domain.ValueObjects;
+using DisabilityCompensation.Shared.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,14 +32,34 @@ namespace DisabilityCompensation.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery] SearchCompensationQuery request)
         {
+            request.UserClaim = User.GetClaims();
             var response = await _mediator.Send(request);
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm] AddCompensationCommand compensationRequest)
+        public async Task<IActionResult> Add([FromForm] AddCompensationCommand request)
         {
-            var response = await _mediator.Send(compensationRequest);
+            request.UserClaim = User.GetClaims();
+            var response = await _mediator.Send(request);
+            return Ok(response);
+        }
+
+        [HttpPatch("{id}/approve")]
+        [Authority(Authority.DisabilityCompensationStatus)]
+        public async Task<IActionResult> Approve([FromBody][FromRoute] ApproveCompensationCommand request)
+        {
+            request.UserClaim = User.GetClaims();
+            var response = await _mediator.Send(request);
+            return Ok(response);
+        }
+
+        [HttpPatch("{id}/reject")]
+        [Authority(Authority.DisabilityCompensationStatus)]
+        public async Task<IActionResult> Reject([FromBody][FromRoute] RejectCompensationCommand request)
+        {
+            request.UserClaim = User.GetClaims();
+            var response = await _mediator.Send(request);
             return Ok(response);
         }
     }

@@ -35,16 +35,16 @@ namespace DisabilityCompensation.Persistence.Repositories
             return _context.Database.ExecuteSqlRawAsync(query);
         }
 
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false)
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false)
         {
-            if (noTracking)
+            if (!tracking)
                 return await _context.Set<TEntity>().AsNoTracking().Where(predicate).ToListAsync();
             return await _context.Set<TEntity>().Where(predicate).ToListAsync();
         }
 
-        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false)
+        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false)
         {
-            if (noTracking)
+            if (tracking)
                 return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
             return await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(predicate);
         }
@@ -54,22 +54,13 @@ namespace DisabilityCompensation.Persistence.Repositories
             return await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
 
-        public virtual async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false)
-        {
-            IQueryable<TEntity> query = _context.Set<TEntity>().Where(predicate);
-
-            return noTracking
-                ? await query.AsNoTracking().ToListAsync()
-                : await query.ToListAsync();
-        }
-
-        public virtual async Task<TEntity?> GetByIdAsync(Guid id, bool noTracking = false)
+        public virtual async Task<TEntity?> GetByIdAsync(Guid id, bool tracking = false)
         {
             var query = _context.Set<TEntity>();
 
-            return noTracking
-                ? await query.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id)
-                : await query.FindAsync(id);
+            return tracking
+                ? await query.FindAsync(id)
+                : await query.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void Remove(TEntity entity)
@@ -87,13 +78,13 @@ namespace DisabilityCompensation.Persistence.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false)
+        public async Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false)
         {
             var query = _context.Set<TEntity>();
 
-            return noTracking
-                ? await query.AsNoTracking().SingleOrDefaultAsync(predicate)
-                : await query.SingleOrDefaultAsync(predicate);
+            return tracking
+                ? await query.SingleOrDefaultAsync(predicate)
+                : await query.AsNoTracking().SingleOrDefaultAsync(predicate);
         }
 
         public void SoftRemove(TEntity entity)

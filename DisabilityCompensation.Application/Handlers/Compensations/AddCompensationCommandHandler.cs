@@ -14,24 +14,20 @@ namespace DisabilityCompensation.Application.Handlers.Compensations
     {
         private readonly IMapper _mapper;
         private readonly ICompensationService _compensationService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AddCompensationCommandHandler(
             ICompensationService compensationService,
-            IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IMapper mapper)
         {
             _compensationService = compensationService;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<BaseResponse<Guid>> Handle(AddCompensationCommand request, CancellationToken cancellationToken)
         {
-            var userClaim = _httpContextAccessor.HttpContext.GetClaims();
             var compensation = _mapper.Map<CompensationDto>(request);
             compensation.Status = Domain.ValueObjects.CompensationStatus.Pending;
-            var id = await _compensationService.AddAsync(compensation, userClaim);
+            var id = await _compensationService.AddAsync(compensation, request.UserClaim!);
 
             return new BaseResponse<Guid>
             {

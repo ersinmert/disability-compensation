@@ -2,6 +2,7 @@
 using DisabilityCompensation.Domain.Entities;
 using DisabilityCompensation.Domain.Interfaces.IRepositories;
 using DisabilityCompensation.Persistence.Contexts;
+using DisabilityCompensation.Shared.Dtos;
 using DisabilityCompensation.Shared.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +30,48 @@ namespace DisabilityCompensation.Persistence.Repositories
                 : await query.FirstOrDefaultAsync();
         }
 
-        public async Task<PagedResult<Compensation>> SearchPagedAsync(SearchCompensationDto search)
+        public async Task<PagedResult<Compensation>> SearchAllPagedAsync(SearchCompensationDto search)
+        {
+            var query = GetSearchQuery(search);
+
+            var totalCount = await query.CountAsync();
+            var data = await query.OrderByDescending(x => x.CreatedDate)
+                .Skip((search.Page - 1) * search.PageSize)
+                .Take(search.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<Compensation>
+            {
+                Items = data,
+                Page = search.Page,
+                PageSize = search.PageSize,
+                TotalRecords = totalCount,
+                TotalPage = (int)Math.Ceiling((double)totalCount / search.PageSize)
+            };
+        }
+
+        public async Task<PagedResult<Compensation>> SearchOwnedPagedAsync(SearchCompensationDto search, Guid userId)
+        {
+            var query = GetSearchQuery(search);
+            query = query.Where(x => x.CreatedBy == userId);
+
+            var totalCount = await query.CountAsync();
+            var data = await query.OrderByDescending(x => x.CreatedDate)
+                .Skip((search.Page - 1) * search.PageSize)
+                .Take(search.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<Compensation>
+            {
+                Items = data,
+                Page = search.Page,
+                PageSize = search.PageSize,
+                TotalRecords = totalCount,
+                TotalPage = (int)Math.Ceiling((double)totalCount / search.PageSize)
+            };
+        }
+
+        private IQueryable<Compensation> GetSearchQuery(SearchCompensationDto search)
         {
             var startDate = search.Date?.ToUniversalTime().Date;
             var endDate = startDate?.AddDays(1);
@@ -46,20 +88,7 @@ namespace DisabilityCompensation.Persistence.Repositories
                     &&
                     x.CreatedDate < endDate);
 
-            var totalCount = await query.CountAsync();
-            var data = await query.OrderByDescending(x => x.CreatedDate)
-                .Skip((search.Page - 1) * search.PageSize)
-                .Take(search.PageSize)
-                .ToListAsync();
-
-            return new PagedResult<Compensation>
-            {
-                Items = data,
-                Page = search.Page,
-                PageSize = search.PageSize,
-                TotalRecords = totalCount,
-                TotalPage = (int)Math.Ceiling((double)totalCount / search.PageSize)
-            };
+            return query;
         }
     }
 }

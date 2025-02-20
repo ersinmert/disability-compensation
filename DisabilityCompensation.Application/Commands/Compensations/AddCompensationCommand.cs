@@ -1,4 +1,5 @@
 ﻿using DisabilityCompensation.Application.Dtos.Compensation.AddCompensation;
+using DisabilityCompensation.Shared.Dtos;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
 
@@ -12,5 +13,7 @@ namespace DisabilityCompensation.Application.Commands.Compensations
         public EventRequest? Event { get; set; }
         public List<ExpenseRequest>? Expenses { get; set; }
         public List<DocumentRequest>? Documents { get; set; }
+
+        public UserClaim? UserClaim { get; set; }
     }
 }

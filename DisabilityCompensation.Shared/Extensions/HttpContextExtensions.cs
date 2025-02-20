@@ -6,13 +6,13 @@ namespace DisabilityCompensation.Shared.Extensions
 {
     public static class HttpContextExtensions
     {
-        public static UserClaim GetClaims(this HttpContext? httpContext)
+        public static UserClaim GetClaims(this ClaimsPrincipal? user)
         {
-            if (httpContext == null)
+            if (user == null)
             {
-                throw new ArgumentNullException(nameof(httpContext));
+                throw new ArgumentNullException(nameof(user));
             }
-            var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 throw new ArgumentNullException(userId);

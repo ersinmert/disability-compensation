@@ -19,7 +19,9 @@ namespace DisabilityCompensation.Persistence
             IAuthRepository authRepository,
             IUserAuthorityRepository userAuthorityRepository,
             IUserRepository userRepository,
-            IAuthorityRepository authorityRepository)
+            IAuthorityRepository authorityRepository,
+            IRoleAuthorityRepository roleAuthorityRepository,
+            IUserRoleRepository userRoleRepository)
         {
             _context = context;
             CompensationRepository = compensationRepository;
@@ -28,6 +30,8 @@ namespace DisabilityCompensation.Persistence
             UserAuthorityRepository = userAuthorityRepository;
             UserRepository = userRepository;
             AuthorityRepository = authorityRepository;
+            RoleAuthorityRepository = roleAuthorityRepository;
+            UserRoleRepository = userRoleRepository;
         }
 
         #region Methods
@@ -90,6 +94,8 @@ namespace DisabilityCompensation.Persistence
         public IUserAuthorityRepository UserAuthorityRepository { get; set; }
         public IUserRepository UserRepository { get; set; }
         public IAuthorityRepository AuthorityRepository { get; set; }
+        public IRoleAuthorityRepository RoleAuthorityRepository { get; set; }
+        public IUserRoleRepository UserRoleRepository { get; set; }
     }
 
 }

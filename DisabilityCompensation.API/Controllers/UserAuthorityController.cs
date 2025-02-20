@@ -9,7 +9,6 @@ namespace DisabilityCompensation.API.Controllers
     [Route("api/users/{userId}/authorities")]
     [ApiController]
     [Authorize]
-    [Admin]
     public class UserAuthorityController : ControllerBase
     {
         private readonly IMediator _mediator;

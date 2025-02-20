@@ -9,6 +9,11 @@ namespace DisabilityCompensation.Domain.Entities
         public string? PredefinedNote { get; set; }
         public string? Note { get; set; }
         public CompensationStatus Status { get; set; } = CompensationStatus.Pending;
+        public int? DisabilityRate { get; set; }
+        public bool? HasTemporaryDisability { get; set; }
+        public bool? HasCaregiver { get; set; }
+        public int? TemporaryDisabilityDay { get; set; }
+        public string? RejectReason { get; set; }
 
         #region Relations
 

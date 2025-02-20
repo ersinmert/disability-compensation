@@ -24,7 +24,7 @@ namespace DisabilityCompensation.Application.Handlers.Compensations
         public async Task<BaseResponse<PagedResultDto<CompensationDto>>> Handle(SearchCompensationQuery request, CancellationToken cancellationToken)
         {
             var search = _mapper.Map<SearchCompensationDto>(request);
-            var compensations = await _compensationService.SearchPagedAsync(search);
+            var compensations = await _compensationService.SearchPagedAsync(search, request.UserClaim!);
 
             return new BaseResponse<PagedResultDto<CompensationDto>>
             {

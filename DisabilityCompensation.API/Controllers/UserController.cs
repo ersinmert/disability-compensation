@@ -1,6 +1,7 @@
 ﻿using DisabilityCompensation.Application.Attributes;
 using DisabilityCompensation.Application.Commands.Users;
 using DisabilityCompensation.Application.Queries.Users;
+using DisabilityCompensation.Shared.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,7 @@ namespace DisabilityCompensation.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddUserCommand request)
         {
+            request.UserClaim = User.GetClaims();
             var response = await _mediator.Send(request);
             return CreatedAtAction(nameof(Get), new { id = response.Data }, response);
         }
@@ -44,6 +46,7 @@ namespace DisabilityCompensation.API.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateUserCommand request)
         {
+            request.UserClaim = User.GetClaims();
             var response = await _mediator.Send(request);
             return Ok(response);
         }
@@ -51,6 +54,7 @@ namespace DisabilityCompensation.API.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete([FromQuery] DeleteUserCommand request)
         {
+            request.UserClaim = User.GetClaims();
             var response = await _mediator.Send(request);
             return Ok(response);
         }

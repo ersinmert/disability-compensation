@@ -13,23 +13,19 @@ namespace DisabilityCompensation.Application.Handlers.Users
     {
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UpdateUserCommandHandler(
             IMapper mapper,
-            IUserService userService,
-            IHttpContextAccessor httpContextAccessor)
+            IUserService userService)
         {
             _mapper = mapper;
             _userService = userService;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<BaseResponse<UserDto>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            var userClaim = _httpContextAccessor.HttpContext.GetClaims();
             var updateDto = _mapper.Map<UpdateUserDto>(request);
-            var userDto = await _userService.UpdateAsync(updateDto, userClaim);
+            var userDto = await _userService.UpdateAsync(updateDto, request.UserClaim!);
 
             return new BaseResponse<UserDto>
             {

@@ -6,7 +6,6 @@ using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IRepositories;
 using DisabilityCompensation.Domain.Interfaces.IServices;
 using DisabilityCompensation.Shared.Dtos;
-using System.Linq.Expressions;
 
 namespace DisabilityCompensation.Domain.Services
 {
@@ -40,9 +39,23 @@ namespace DisabilityCompensation.Domain.Services
             return compensationDto.Id;
         }
 
-        public async Task<PagedResultDto<CompensationDto>> SearchPagedAsync(SearchCompensationDto search)
+        public async Task<PagedResultDto<CompensationDto>> SearchPagedAsync(SearchCompensationDto search, UserClaim userClaim)
         {
-            var data = await _unitOfWork.CompensationRepository.SearchPagedAsync(search);
+            var roles = await _unitOfWork.UserRoleRepository.GetRolesAsync(userClaim.UserId);
+            var hasAllDataAccess = roles.Any(role =>
+                                        role == ValueObjects.Role.Admin
+                                        ||
+                                        role == ValueObjects.Role.Expert
+                                   );
+            PagedResult<Compensation>? data;
+            if (hasAllDataAccess)
+            {
+                data = await _unitOfWork.CompensationRepository.SearchAllPagedAsync(search);
+            }
+            else
+            {
+                data = await _unitOfWork.CompensationRepository.SearchOwnedPagedAsync(search, userClaim.UserId);
+            }
             return _mapper.Map<PagedResultDto<CompensationDto>>(data);
         }
 
@@ -74,6 +87,35 @@ namespace DisabilityCompensation.Domain.Services
                 var uploadedPath = await _fileUploaderService.UploadFileAsync(expense.File);
                 expense.FilePath = uploadedPath;
             }
+        }
+
+        public async Task<bool> ApproveAsync(ApproveCompensationDto approveDto, UserClaim userClaim)
+        {
+            var compensation = await _unitOfWork.CompensationRepository.FirstOrDefaultAsync(x => x.Id == approveDto.Id, tracking: true);
+            compensation!.UpdatedDate = DateTime.UtcNow;
+            compensation.UpdatedBy = userClaim.UserId;
+            compensation.Status = ValueObjects.CompensationStatus.Approve;
+            compensation.HasTemporaryDisability = approveDto.HasTemporaryDisability;
+            compensation.TemporaryDisabilityDay = approveDto.TemporaryDisabilityDay;
+            compensation.DisabilityRate = approveDto.DisabilityRate;
+            compensation.HasCaregiver = approveDto.HasCaregiver;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> RejectAsync(RejectCompensationDto rejectDto, UserClaim userClaim)
+        {
+            var compensation = await _unitOfWork.CompensationRepository.FirstOrDefaultAsync(x => x.Id == rejectDto.Id, tracking: true);
+            compensation!.UpdatedDate = DateTime.UtcNow;
+            compensation.UpdatedBy = userClaim.UserId;
+            compensation.Status = ValueObjects.CompensationStatus.Reject;
+            compensation.RejectReason = rejectDto.RejectReason;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
         }
     }
 }

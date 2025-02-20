@@ -12,5 +12,19 @@ namespace DisabilityCompensation.Shared.Extensions
 
             return attribute?.Description ?? value.ToString();
         }
+
+        public static T GetEnumByDescription<T>(this string description) where T : Enum
+        {
+            foreach (var field in typeof(T).GetFields())
+            {
+                var attribute = field.GetCustomAttribute<DescriptionAttribute>();
+                if (attribute != null && attribute.Description == description)
+                {
+                    return (T)field.GetValue(null)!;
+                }
+            }
+
+            throw new ArgumentException($"'{description}' açıklamasına sahip bir enum bulunamadı.", nameof(description));
+        }
     }
 }

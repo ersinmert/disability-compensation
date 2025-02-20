@@ -58,6 +58,7 @@ namespace DisabilityCompensation.Application
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserAuthorityService, UserAuthorityService>();
             services.AddScoped<IAuthorityService, AuthorityService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
         }
 
         private static void AddValidators(IServiceCollection services)

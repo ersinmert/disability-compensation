@@ -7,10 +7,9 @@ namespace DisabilityCompensation.Domain.Interfaces.IRepositories
     {
         Task<TEntity?> GetByIdAsync(Guid id, bool noTracking = false);
         Task<IEnumerable<TEntity>> GetAllAsync();
-        Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false);
-        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false);
-        Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false);
-        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool noTracking = false);
+        Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false);
+        Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false);
+        Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false);
         Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> AddAsync(TEntity entity);
         Task AddRangeAsync(IEnumerable<TEntity> entities);

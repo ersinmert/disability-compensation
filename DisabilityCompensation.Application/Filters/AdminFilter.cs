@@ -7,11 +7,11 @@ namespace DisabilityCompensation.Application.Filters
 {
     public class AdminFilter : IAsyncAuthorizationFilter
     {
-        private readonly IUserService _userService;
+        private readonly IUserRoleService _userRoleService;
 
-        public AdminFilter(IUserService userService)
+        public AdminFilter(IUserRoleService userRoleService)
         {
-            _userService = userService;
+            _userRoleService = userRoleService;
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
@@ -32,7 +32,7 @@ namespace DisabilityCompensation.Application.Filters
 
             var userGuid = Guid.Parse(userId);
 
-            var isAdmin = await _userService.AnyAsync(x => x.Id == userGuid && x.IsAdmin && x.IsActive);
+            var isAdmin = await _userRoleService.IsAdmin(userGuid);
             if (!isAdmin)
             {
                 context.Result = new ForbidResult();

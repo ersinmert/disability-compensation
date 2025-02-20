@@ -7,6 +7,9 @@ namespace DisabilityCompensation.Domain.ValueObjects
         None = 0,
 
         [Description("İş Göremezlik Tazminatı")]
-        DisabilityCompensation
+        DisabilityCompensation,
+
+        [Description("İş Göremezlik Tazminat Durumu")]
+        DisabilityCompensationStatus
     }
 }
