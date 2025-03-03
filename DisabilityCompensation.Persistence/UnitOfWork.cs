@@ -21,7 +21,9 @@ namespace DisabilityCompensation.Persistence
             IUserRepository userRepository,
             IAuthorityRepository authorityRepository,
             IRoleAuthorityRepository roleAuthorityRepository,
-            IUserRoleRepository userRoleRepository)
+            IUserRoleRepository userRoleRepository,
+            IMinimumWageRepository minimumWageRepository,
+            ILifeRepository lifeRepository)
         {
             _context = context;
             CompensationRepository = compensationRepository;
@@ -32,6 +34,8 @@ namespace DisabilityCompensation.Persistence
             AuthorityRepository = authorityRepository;
             RoleAuthorityRepository = roleAuthorityRepository;
             UserRoleRepository = userRoleRepository;
+            MinimumWageRepository = minimumWageRepository;
+            LifeRepository = lifeRepository;
         }
 
         #region Methods
@@ -96,6 +100,8 @@ namespace DisabilityCompensation.Persistence
         public IAuthorityRepository AuthorityRepository { get; set; }
         public IRoleAuthorityRepository RoleAuthorityRepository { get; set; }
         public IUserRoleRepository UserRoleRepository { get; set; }
+        public IMinimumWageRepository MinimumWageRepository { get; set; }
+        public ILifeRepository LifeRepository { get; set; }
     }
 
 }

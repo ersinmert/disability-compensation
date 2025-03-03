@@ -2,6 +2,7 @@
 using DisabilityCompensation.Shared.Dtos;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DisabilityCompensation.Application.Commands.Compensations
 {

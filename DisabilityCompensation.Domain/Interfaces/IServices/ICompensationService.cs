@@ -11,5 +11,6 @@ namespace DisabilityCompensation.Domain.Interfaces.IServices
         Task<PagedResultDto<CompensationDto>> SearchPagedAsync(SearchCompensationDto search, UserClaim userClaim);
         Task<bool> ApproveAsync(ApproveCompensationDto approveDto, UserClaim userClaim);
         Task<bool> RejectAsync(RejectCompensationDto rejectDto, UserClaim userClaim);
+        Task CalculateAsync(Guid compensationId);
     }
 }

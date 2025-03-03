@@ -5,6 +5,7 @@ using DisabilityCompensation.Domain.Entities;
 using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IRepositories;
 using DisabilityCompensation.Domain.Interfaces.IServices;
+using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator;
 using DisabilityCompensation.Shared.Dtos;
 
 namespace DisabilityCompensation.Domain.Services
@@ -14,15 +15,18 @@ namespace DisabilityCompensation.Domain.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFileUploaderService _fileUploaderService;
+        private readonly ICompensationCalculationManager _compensationCalculationManager;
 
         public CompensationService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IFileUploaderService fileUploaderService) : base(unitOfWork.CompensationRepository, mapper)
+            IFileUploaderService fileUploaderService,
+            ICompensationCalculationManager compensationCalculationManager) : base(unitOfWork.CompensationRepository, mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _fileUploaderService = fileUploaderService;
+            _compensationCalculationManager = compensationCalculationManager;
         }
 
         public async Task<Guid> AddAsync(CompensationDto compensationDto, UserClaim userClaim)
@@ -91,13 +95,14 @@ namespace DisabilityCompensation.Domain.Services
 
         public async Task<bool> ApproveAsync(ApproveCompensationDto approveDto, UserClaim userClaim)
         {
-            var compensation = await _unitOfWork.CompensationRepository.FirstOrDefaultAsync(x => x.Id == approveDto.Id, tracking: true);
+            var compensation = await _unitOfWork.CompensationRepository.GetByIdAsync(approveDto.Id);
             compensation!.UpdatedDate = DateTime.UtcNow;
             compensation.UpdatedBy = userClaim.UserId;
             compensation.Status = ValueObjects.CompensationStatus.Approve;
             compensation.HasTemporaryDisability = approveDto.HasTemporaryDisability;
             compensation.TemporaryDisabilityDay = approveDto.TemporaryDisabilityDay;
-            compensation.DisabilityRate = approveDto.DisabilityRate;
+            compensation.Event.DisabilityRate = approveDto.DisabilityRate;
+
             compensation.HasCaregiver = approveDto.HasCaregiver;
 
             await _unitOfWork.SaveChangesAsync();
@@ -116,6 +121,24 @@ namespace DisabilityCompensation.Domain.Services
             await _unitOfWork.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task CalculateAsync(Guid compensationId)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var totalAmount = await _compensationCalculationManager.CalculateAsync(compensationId);
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+            }
+            catch
+            {
+                await _unitOfWork.RollbackAsync();
+
+                throw;
+            }
         }
     }
 }

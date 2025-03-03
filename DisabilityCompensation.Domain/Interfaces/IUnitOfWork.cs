@@ -18,5 +18,7 @@ namespace DisabilityCompensation.Domain.Interfaces
         IAuthorityRepository AuthorityRepository { get; set; }
         IRoleAuthorityRepository RoleAuthorityRepository { get; set; }
         IUserRoleRepository UserRoleRepository { get; set; }
+        IMinimumWageRepository MinimumWageRepository { get; set; }
+        ILifeRepository LifeRepository { get; set; }
     }
 }

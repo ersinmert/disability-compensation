@@ -28,5 +28,7 @@ namespace DisabilityCompensation.Persistence.Contexts
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleAuthority> RoleAuthorities { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Life> Lifes { get; set; }
+        public DbSet<MinimumWage> MinimumWages { get; set; }
     }
 }

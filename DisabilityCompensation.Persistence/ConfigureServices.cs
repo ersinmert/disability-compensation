@@ -31,6 +31,8 @@ namespace DisabilityCompensation.Persistence
             services.AddScoped<IAuthorityRepository, AuthorityRepository>();
             services.AddScoped<IRoleAuthorityRepository, RoleAuthorityRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IMinimumWageRepository, MinimumWageRepository>();
+            services.AddScoped<ILifeRepository, LifeRepository>();
 
             return services;
         }

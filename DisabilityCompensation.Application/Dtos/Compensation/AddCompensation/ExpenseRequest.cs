@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DisabilityCompensation.Application.Dtos.Compensation.AddCompensation
 {

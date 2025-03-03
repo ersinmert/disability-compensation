@@ -19,6 +19,16 @@ using DisabilityCompensation.Domain.Validators.FileValidators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator.SalaryCalculator;
+using DisabilityCompensation.Domain.Services.CompensationCalculator.SalaryCalculator;
+using DisabilityCompensation.Domain.Services.CompensationCalculator.DisabilityRateCalculator;
+using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator.DisabilityRateCalculator;
+using DisabilityCompensation.Domain.Services.CompensationCalculator.DateRangeCalculator;
+using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator.DateRangeCalculator;
+using DisabilityCompensation.Domain.Services.CompensationCalculator;
+using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator;
+using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator.PeriodDatesSpecifier;
+using DisabilityCompensation.Domain.Services.CompensationCalculator.PeriodDatesSpecifier;
 
 namespace DisabilityCompensation.Application
 {
@@ -59,6 +69,19 @@ namespace DisabilityCompensation.Application
             services.AddScoped<IUserAuthorityService, UserAuthorityService>();
             services.AddScoped<IAuthorityService, AuthorityService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<IMinimumWageService, MinimumWageService>();
+            services.AddScoped<ILifeService, LifeService>();
+
+            services.AddScoped<ICompensationCalculator, KnownPeriodCompensationCalculator>();
+            services.AddScoped<ICompensationCalculator, ActivePeriodCompensationCalculator>();
+            services.AddScoped<ICompensationCalculator, PassivePeriodCompensationCalculator>();
+
+            services.AddScoped<ICompensationCalculationManager, CompensationCalculationManager>();
+
+            services.AddScoped<ISalaryCalculatorFactory, SalaryCalculatorFactory>();
+            services.AddScoped<IDisabilityRateCalculatorFactory, DisabilityRateCalculatorFactory>();
+            services.AddScoped<IDateRangeCalculatorFactory, DateRangeCalculatorFactory>();
+            services.AddScoped<IPeriodDatesSpecifierFactory, PeriodDatesSpecifierFactory>();
         }
 
         private static void AddValidators(IServiceCollection services)
