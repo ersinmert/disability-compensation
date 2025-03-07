@@ -95,19 +95,33 @@ namespace DisabilityCompensation.Domain.Services
 
         public async Task<bool> ApproveAsync(ApproveCompensationDto approveDto, UserClaim userClaim)
         {
-            var compensation = await _unitOfWork.CompensationRepository.GetByIdAsync(approveDto.Id);
-            compensation!.UpdatedDate = DateTime.UtcNow;
-            compensation.UpdatedBy = userClaim.UserId;
-            compensation.Status = ValueObjects.CompensationStatus.Approve;
-            compensation.HasTemporaryDisability = approveDto.HasTemporaryDisability;
-            compensation.TemporaryDisabilityDay = approveDto.TemporaryDisabilityDay;
-            compensation.Event.DisabilityRate = approveDto.DisabilityRate;
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
 
-            compensation.HasCaregiver = approveDto.HasCaregiver;
+                var compensation = await _unitOfWork.CompensationRepository.GetByIdAsync(approveDto.Id);
+                compensation!.UpdatedDate = DateTime.UtcNow;
+                compensation.UpdatedBy = userClaim.UserId;
+                compensation.Status = ValueObjects.CompensationStatus.Approve;
+                compensation.HasTemporaryDisability = approveDto.HasTemporaryDisability;
+                compensation.TemporaryDisabilityDay = approveDto.TemporaryDisabilityDay;
+                compensation.Event.DisabilityRate = approveDto.DisabilityRate;
 
-            await _unitOfWork.SaveChangesAsync();
+                compensation.HasCaregiver = approveDto.HasCaregiver;
 
-            return true;
+                await CalculateAsync(approveDto.Id);
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackAsync();
+
+                throw;
+            }
         }
 
         public async Task<bool> RejectAsync(RejectCompensationDto rejectDto, UserClaim userClaim)
@@ -125,18 +139,21 @@ namespace DisabilityCompensation.Domain.Services
 
         public async Task CalculateAsync(Guid compensationId)
         {
-            await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var totalAmount = await _compensationCalculationManager.CalculateAsync(compensationId);
+                await _unitOfWork.BeginTransactionAsync();
+
+                var calculationResult = await _compensationCalculationManager.CalculateAsync(compensationId);
+                var compensationCalculations = _mapper.Map<List<CompensationCalculation>>(calculationResult.CompensationCalculations);
+                await _unitOfWork.CompensationCalculationRepository.AddRangeAsync(compensationCalculations);
+                await _unitOfWork.CompensationRepository.SetTotalAmount(compensationId, calculationResult.Amount);
 
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
             }
-            catch
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
-
                 throw;
             }
         }

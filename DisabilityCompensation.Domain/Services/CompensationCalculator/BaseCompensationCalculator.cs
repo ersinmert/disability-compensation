@@ -4,7 +4,7 @@
     {
         public decimal CalculateCompensation(decimal dailySalary, int totalDays, decimal disabilityRate, decimal faultRate)
         {
-            return dailySalary * totalDays * disabilityRate * faultRate;
+            return Math.Round(dailySalary * totalDays * disabilityRate * faultRate, 2);
         }
     }
 }

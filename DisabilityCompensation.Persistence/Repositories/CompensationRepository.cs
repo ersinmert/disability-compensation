@@ -90,5 +90,11 @@ namespace DisabilityCompensation.Persistence.Repositories
 
             return query;
         }
+
+        public async Task SetTotalAmount(Guid id, decimal totalAmount)
+        {
+            var compensation = await _context.Compensations.FirstAsync(x => x.Id == id);
+            compensation.TotalAmount = totalAmount;
+        }
     }
 }

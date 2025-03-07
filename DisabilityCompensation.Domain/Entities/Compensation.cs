@@ -13,6 +13,7 @@ namespace DisabilityCompensation.Domain.Entities
         public bool? HasCaregiver { get; set; }
         public int? TemporaryDisabilityDay { get; set; }
         public string? RejectReason { get; set; }
+        public decimal? TotalAmount { get; set; }
 
         #region Relations
 
@@ -21,6 +22,7 @@ namespace DisabilityCompensation.Domain.Entities
         public List<Expense>? Expenses { get; set; }
         public List<Document>? Documents { get; set; }
         public User? CreatedByUser { get; set; }
+        public List<CompensationCalculation>? CompensationCalculation { get; set; }
 
         #endregion
     }

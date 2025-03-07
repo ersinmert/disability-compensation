@@ -1,4 +1,5 @@
-﻿using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator;
+﻿using DisabilityCompensation.Domain.Dtos;
+using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator;
 
 namespace DisabilityCompensation.Domain.Services.CompensationCalculator
 {
@@ -11,15 +12,21 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
             _compensationCalculators = compensationCalculators;
         }
 
-        public async Task<decimal> CalculateAsync(Guid compensationId)
+        public async Task<CompensationCalculatorResultDto> CalculateAsync(Guid compensationId)
         {
             decimal totalAmount = 0;
+            List<CompensationCalculationDto> compensationCalculations = new List<CompensationCalculationDto>();
             foreach (var compensationCalculator in _compensationCalculators)
             {
-                decimal amount = await compensationCalculator.CalculateAsync(compensationId);
-                totalAmount += amount;
+                CompensationCalculatorResultDto calculateResult = await compensationCalculator.CalculateAsync(compensationId);
+                totalAmount += calculateResult.Amount;
+                compensationCalculations.AddRange(calculateResult.CompensationCalculations);
             }
-            return totalAmount;
+            return new CompensationCalculatorResultDto
+            {
+                CompensationCalculations = compensationCalculations,
+                Amount = totalAmount
+            };
         }
     }
 }

@@ -7,5 +7,6 @@ namespace DisabilityCompensation.Domain.Interfaces.IRepositories
     {
         Task<PagedResult<Compensation>> SearchAllPagedAsync(SearchCompensationDto search);
         Task<PagedResult<Compensation>> SearchOwnedPagedAsync(SearchCompensationDto search, Guid userId);
+        Task SetTotalAmount(Guid id, decimal totalAmount);
     }
 }

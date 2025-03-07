@@ -23,7 +23,8 @@ namespace DisabilityCompensation.Persistence
             IRoleAuthorityRepository roleAuthorityRepository,
             IUserRoleRepository userRoleRepository,
             IMinimumWageRepository minimumWageRepository,
-            ILifeRepository lifeRepository)
+            ILifeRepository lifeRepository,
+            ICompensationCalculationRepository compensationCalculationRepository)
         {
             _context = context;
             CompensationRepository = compensationRepository;
@@ -36,13 +37,17 @@ namespace DisabilityCompensation.Persistence
             UserRoleRepository = userRoleRepository;
             MinimumWageRepository = minimumWageRepository;
             LifeRepository = lifeRepository;
+            CompensationCalculationRepository = compensationCalculationRepository;
         }
 
         #region Methods
 
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            if (_transaction != null)
+            {
+                _transaction = await _context.Database.BeginTransactionAsync();
+            }
         }
 
         public async Task SaveChangesAsync()
@@ -102,6 +107,7 @@ namespace DisabilityCompensation.Persistence
         public IUserRoleRepository UserRoleRepository { get; set; }
         public IMinimumWageRepository MinimumWageRepository { get; set; }
         public ILifeRepository LifeRepository { get; set; }
+        public ICompensationCalculationRepository CompensationCalculationRepository { get; set; }
     }
 
 }

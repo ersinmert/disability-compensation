@@ -71,6 +71,7 @@ namespace DisabilityCompensation.Application
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IMinimumWageService, MinimumWageService>();
             services.AddScoped<ILifeService, LifeService>();
+            services.AddScoped<ICompensationCalculaitonService, CompensationCalculaitonService>();
 
             services.AddScoped<ICompensationCalculator, KnownPeriodCompensationCalculator>();
             services.AddScoped<ICompensationCalculator, ActivePeriodCompensationCalculator>();

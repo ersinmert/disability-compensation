@@ -30,5 +30,6 @@ namespace DisabilityCompensation.Persistence.Contexts
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Life> Lifes { get; set; }
         public DbSet<MinimumWage> MinimumWages { get; set; }
+        public DbSet<CompensationCalculation> CompensationCalculations { get; set; }
     }
 }

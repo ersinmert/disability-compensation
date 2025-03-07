@@ -1,7 +1,9 @@
-﻿namespace DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator
+﻿using DisabilityCompensation.Domain.Dtos;
+
+namespace DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator
 {
     public interface ICompensationCalculator
     {
-        Task<decimal> CalculateAsync(Guid compensationId);
+        Task<CompensationCalculatorResultDto> CalculateAsync(Guid compensationId);
     }
 }

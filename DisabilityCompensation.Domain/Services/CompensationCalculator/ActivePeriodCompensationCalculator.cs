@@ -35,7 +35,7 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
             _disabilityRateCalculatorFactory = disabilityRateCalculatorFactory;
         }
 
-        public async Task<decimal> CalculateAsync(Guid compensationId)
+        public async Task<CompensationCalculatorResultDto> CalculateAsync(Guid compensationId)
         {
             var compensation = await _compensationService.GetByIdAsync<CompensationDto>(compensationId);
             var minimumWage = await _minimumWageService.GetCurrentAsync();
@@ -46,21 +46,26 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
             }).GetDateRangesAsync(compensation!);
 
             decimal totalActivePeriodCompnsationAmount = 0;
+            List<CompensationCalculationDto> compensationCalculations = new List<CompensationCalculationDto>();
             foreach (var dateRange in dateRanges)
             {
-                var compensationClaimantAmount = await ClaimantCalculate(compensation, minimumWage, dateRange);
+                var compensationClaimantAmount = await ClaimantCalculate(compensation, minimumWage, dateRange, compensationCalculations);
                 totalActivePeriodCompnsationAmount += compensationClaimantAmount;
                 if (compensation!.HasCaregiver == true)
                 {
-                    var compensationCaregiverAmount = await CaregiverCalculate(compensation!, minimumWage, dateRange);
+                    var compensationCaregiverAmount = await CaregiverCalculate(compensation!, minimumWage, dateRange, compensationCalculations);
                     totalActivePeriodCompnsationAmount += compensationCaregiverAmount;
                 }
             }
 
-            return totalActivePeriodCompnsationAmount;
+            return new CompensationCalculatorResultDto
+            {
+                Amount = totalActivePeriodCompnsationAmount,
+                CompensationCalculations = compensationCalculations
+            };
         }
 
-        private async Task<decimal> ClaimantCalculate(CompensationDto? compensation, MinimumWageDto minimumWage, DateRangeDto dateRange)
+        private async Task<decimal> ClaimantCalculate(CompensationDto? compensation, MinimumWageDto minimumWage, DateRangeDto dateRange, List<CompensationCalculationDto> compensationCalculations)
         {
             var monthlySalary = _salaryCalculatorFactory.CreateCalculator(new ActivePeriodClaimantSalaryCalculatorDto
             {
@@ -79,10 +84,20 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
             int totalDays = DateHelper.BetweenTotalDays(dateRange.StartDate, dateRange.EndDate);
 
             var compensationClaimantAmount = CalculateCompensation(dailySalary, totalDays, disabilityRate, compensation!.Event!.FaultRate!.Value);
+            compensationCalculations.Add(new CompensationCalculationDto(
+                compensation,
+                dateRange,
+                compensationClaimantAmount,
+                disabilityRate,
+                Periods.Active,
+                monthlySalary,
+                totalDays,
+                SalaryCalculatorTypes.Claimant)
+            );
             return compensationClaimantAmount;
         }
 
-        private async Task<decimal> CaregiverCalculate(CompensationDto? compensation, MinimumWageDto minimumWage, DateRangeDto dateRange)
+        private async Task<decimal> CaregiverCalculate(CompensationDto? compensation, MinimumWageDto minimumWage, DateRangeDto dateRange, List<CompensationCalculationDto> compensationCalculations)
         {
             var monthlySalary = _salaryCalculatorFactory.CreateCalculator(new ActivePeriodCaregiverSalaryCalculatorDto
             {
@@ -101,6 +116,16 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
             int totalDays = DateHelper.BetweenTotalDays(dateRange.StartDate, dateRange.EndDate);
 
             var compensationCaregiverAmount = CalculateCompensation(dailySalary, totalDays, disabilityRate, compensation!.Event!.FaultRate!.Value);
+            compensationCalculations.Add(new CompensationCalculationDto(
+                compensation,
+                dateRange,
+                compensationCaregiverAmount,
+                disabilityRate,
+                Periods.Active,
+                monthlySalary,
+                totalDays,
+                SalaryCalculatorTypes.Caregiver)
+            );
             return compensationCaregiverAmount;
         }
     }

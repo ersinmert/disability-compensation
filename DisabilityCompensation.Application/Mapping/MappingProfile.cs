@@ -33,6 +33,8 @@ namespace DisabilityCompensation.Application.Mapping
             CreateMap<UpdateUserCommand, UpdateUserDto>().ReverseMap();
             CreateMap<Authority, AuthorityDto>().ReverseMap();
             CreateMap<ApproveCompensationDto, ApproveCompensationCommand>().ReverseMap();
+            CreateMap<CompensationCalculation, CompensationCalculationDto>().ReverseMap();
+
         }
     }
 }
