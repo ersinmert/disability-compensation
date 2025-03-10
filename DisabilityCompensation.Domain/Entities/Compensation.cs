@@ -22,7 +22,7 @@ namespace DisabilityCompensation.Domain.Entities
         public List<Expense>? Expenses { get; set; }
         public List<Document>? Documents { get; set; }
         public User? CreatedByUser { get; set; }
-        public List<CompensationCalculation>? CompensationCalculation { get; set; }
+        public List<CompensationCalculation>? CompensationCalculations { get; set; }
 
         #endregion
     }

@@ -1,6 +1,5 @@
 ﻿using DisabilityCompensation.Domain.Dtos;
 using DisabilityCompensation.Domain.ValueObjects;
-using DisabilityCompensation.Shared.Constants;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using DisabilityCompensation.Shared.Utilities;
 
@@ -21,6 +20,7 @@ namespace DisabilityCompensation.Application.Dtos.Entity
         public UserDto? CreatedByUser { get; set; }
         public List<ExpenseDto>? Expenses { get; set; }
         public List<DocumentDto>? Documents { get; set; }
+        public List<CompensationCalculationDto>? CompensationCalculations { get; set; }
 
         public int GetAgeOnDate(DateOnly date)
         {
