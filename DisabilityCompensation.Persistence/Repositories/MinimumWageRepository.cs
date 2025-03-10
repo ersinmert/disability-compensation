@@ -23,6 +23,6 @@ namespace DisabilityCompensation.Persistence.Repositories
         }
 
         public async Task<MinimumWage> GetCurrentAsync()
-            => await _context.MinimumWages.OrderByDescending(x => x.EndDate).FirstAsync();
+            => await _context.MinimumWages.OrderByDescending(x => x.EndDate).AsNoTracking().FirstAsync();
     }
 }

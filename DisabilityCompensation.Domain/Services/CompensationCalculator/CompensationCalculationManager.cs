@@ -7,9 +7,9 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
     {
         private readonly IList<ICompensationCalculator> _compensationCalculators;
 
-        public CompensationCalculationManager(IList<ICompensationCalculator> compensationCalculators)
+        public CompensationCalculationManager(IEnumerable<ICompensationCalculator> compensationCalculators)
         {
-            _compensationCalculators = compensationCalculators;
+            _compensationCalculators = compensationCalculators.ToList();
         }
 
         public async Task<CompensationCalculatorResultDto> CalculateAsync(Guid compensationId)

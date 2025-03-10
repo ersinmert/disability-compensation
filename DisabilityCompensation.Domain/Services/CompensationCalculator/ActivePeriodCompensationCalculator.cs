@@ -10,26 +10,29 @@ using DisabilityCompensation.Domain.Dtos.SalaryCalculator;
 using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator.DisabilityRateCalculator;
 using DisabilityCompensation.Domain.Dtos.DisabilityRateCalculator;
 using DisabilityCompensation.Shared.Utilities;
+using DisabilityCompensation.Shared.Constants;
+using DisabilityCompensation.Domain.Interfaces;
+using AutoMapper;
 
 namespace DisabilityCompensation.Domain.Services.CompensationCalculator
 {
     public class ActivePeriodCompensationCalculator : BaseCompensationCalculator, ICompensationCalculator
     {
-        private readonly ICompensationService _compensationService;
-        private readonly IMinimumWageService _minimumWageService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         private readonly IDateRangeCalculatorFactory _dateRangeCalculatorFactory;
         private readonly ISalaryCalculatorFactory _salaryCalculatorFactory;
         private readonly IDisabilityRateCalculatorFactory _disabilityRateCalculatorFactory;
 
         public ActivePeriodCompensationCalculator(
-            ICompensationService compensationService,
-            IMinimumWageService minimumWageService,
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
             IDateRangeCalculatorFactory dateRangeCalculatorFactory,
             ISalaryCalculatorFactory salaryCalculatorFactory,
             IDisabilityRateCalculatorFactory disabilityRateCalculatorFactory)
         {
-            _compensationService = compensationService;
-            _minimumWageService = minimumWageService;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
             _dateRangeCalculatorFactory = dateRangeCalculatorFactory;
             _salaryCalculatorFactory = salaryCalculatorFactory;
             _disabilityRateCalculatorFactory = disabilityRateCalculatorFactory;
@@ -37,23 +40,25 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
 
         public async Task<CompensationCalculatorResultDto> CalculateAsync(Guid compensationId)
         {
-            var compensation = await _compensationService.GetByIdAsync<CompensationDto>(compensationId);
-            var minimumWage = await _minimumWageService.GetCurrentAsync();
+            var compensation = await _unitOfWork.CompensationRepository.GetByIdAsync(compensationId, true);
+            var compensationDto = _mapper.Map<CompensationDto>(compensation);
+            var minimumWage = await _unitOfWork.MinimumWageRepository.GetCurrentAsync();
+            var mininumWageDto = _mapper.Map<MinimumWageDto>(minimumWage);
 
             HashSet<DateRangeDto> dateRanges = await _dateRangeCalculatorFactory.CreateCalculator(new ActivePeriodDateRangeCalculatorDto
             {
                 Period = Periods.Active
-            }).GetDateRangesAsync(compensation!);
+            }).GetDateRangesAsync(compensationDto!);
 
             decimal totalActivePeriodCompnsationAmount = 0;
             List<CompensationCalculationDto> compensationCalculations = new List<CompensationCalculationDto>();
             foreach (var dateRange in dateRanges)
             {
-                var compensationClaimantAmount = await ClaimantCalculate(compensation, minimumWage, dateRange, compensationCalculations);
+                var compensationClaimantAmount = await ClaimantCalculate(compensationDto, mininumWageDto, dateRange, compensationCalculations);
                 totalActivePeriodCompnsationAmount += compensationClaimantAmount;
                 if (compensation!.HasCaregiver == true)
                 {
-                    var compensationCaregiverAmount = await CaregiverCalculate(compensation!, minimumWage, dateRange, compensationCalculations);
+                    var compensationCaregiverAmount = await CaregiverCalculate(compensationDto!, mininumWageDto, dateRange, compensationCalculations);
                     totalActivePeriodCompnsationAmount += compensationCaregiverAmount;
                 }
             }
@@ -74,7 +79,7 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
                 Compensation = compensation,
                 MinimumWage = minimumWage,
             }).Calculate();
-            decimal dailySalary = monthlySalary / 30;
+            decimal dailySalary = monthlySalary / AppConstants.DaysInMonth;
 
             decimal disabilityRate = await _disabilityRateCalculatorFactory.CreateCalculator(new ActivePeriodDisabilityRateCalculatorDto
             {
@@ -106,7 +111,7 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator
                 Compensation = compensation,
                 MinimumWage = minimumWage,
             }).Calculate();
-            decimal dailySalary = monthlySalary / 30;
+            decimal dailySalary = monthlySalary / AppConstants.DaysInMonth;
 
             decimal disabilityRate = await _disabilityRateCalculatorFactory.CreateCalculator(new ActivePeriodDisabilityRateCalculatorDto
             {

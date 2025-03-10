@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using DisabilityCompensation.Application.Commands.Compensations;
 using DisabilityCompensation.Application.Dtos.Entity;
-using DisabilityCompensation.Domain.Entities;
 using DisabilityCompensation.Domain.Interfaces.IServices;
 using DisabilityCompensation.Shared.Dtos.Bases;
-using DisabilityCompensation.Shared.Extensions;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace DisabilityCompensation.Application.Handlers.Compensations
 {

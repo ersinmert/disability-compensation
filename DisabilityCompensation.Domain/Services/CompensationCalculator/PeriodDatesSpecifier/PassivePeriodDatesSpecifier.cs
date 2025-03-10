@@ -1,6 +1,6 @@
 ﻿using DisabilityCompensation.Application.Dtos.Entity;
 using DisabilityCompensation.Domain.Dtos;
-using DisabilityCompensation.Domain.Interfaces.IServices;
+using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator.PeriodDatesSpecifier;
 using DisabilityCompensation.Shared.Constants;
 using DisabilityCompensation.Shared.Utilities;
@@ -9,11 +9,11 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator.PeriodDa
 {
     public class PassivePeriodDatesSpecifier : IPeriodDatesSpecifier
     {
-        private readonly ILifeService _lifeService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PassivePeriodDatesSpecifier(ILifeService lifeService)
+        public PassivePeriodDatesSpecifier(IUnitOfWork unitOfWork)
         {
-            _lifeService = lifeService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<DateRangeDto> SpecifyAsync(CompensationDto compensation)
@@ -22,7 +22,7 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator.PeriodDa
 
             var currentDate = DateOnly.FromDateTime(compensation.CreatedDate);
             var currentAge = DateHelper.CalculateAge(compensation.Claimant.BirthDate, currentDate);
-            var lifeTable = await _lifeService.FirstOrDefaultAsync(x =>
+            var lifeTable = await _unitOfWork.LifeRepository.FirstOrDefaultAsync(x =>
                                     x.IsActive
                                     &&
                                     x.LifeType == compensation.Event!.LifeTable

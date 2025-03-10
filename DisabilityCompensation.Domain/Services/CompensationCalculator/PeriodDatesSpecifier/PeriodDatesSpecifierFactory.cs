@@ -1,5 +1,5 @@
 ﻿using DisabilityCompensation.Domain.Dtos.PeriodDatesSpecifier;
-using DisabilityCompensation.Domain.Interfaces.IServices;
+using DisabilityCompensation.Domain.Interfaces;
 using DisabilityCompensation.Domain.Interfaces.IServices.CompensationCalculator.PeriodDatesSpecifier;
 using DisabilityCompensation.Shared.Dtos.Enums;
 
@@ -7,11 +7,11 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator.PeriodDa
 {
     public class PeriodDatesSpecifierFactory : IPeriodDatesSpecifierFactory
     {
-        private readonly ILifeService _lifeService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PeriodDatesSpecifierFactory(ILifeService lifeService)
+        public PeriodDatesSpecifierFactory(IUnitOfWork unitOfWork)
         {
-            _lifeService = lifeService;
+            _unitOfWork = unitOfWork;
         }
 
         public IPeriodDatesSpecifier CreateSpecifier(IPeriodDatesSpecifierFactoryDto calculatorFactoryDto)
@@ -23,7 +23,7 @@ namespace DisabilityCompensation.Domain.Services.CompensationCalculator.PeriodDa
                 case Periods.Active:
                     return new ActivePeriodDatesSpecifier();
                 case Periods.Passive:
-                    return new PassivePeriodDatesSpecifier(_lifeService);
+                    return new PassivePeriodDatesSpecifier(_unitOfWork);
                 default:
                     throw new NotImplementedException();
             }
