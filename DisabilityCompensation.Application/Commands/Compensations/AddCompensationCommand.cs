@@ -2,7 +2,7 @@
 using DisabilityCompensation.Shared.Dtos;
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace DisabilityCompensation.Application.Commands.Compensations
 {
@@ -15,6 +15,7 @@ namespace DisabilityCompensation.Application.Commands.Compensations
         public List<ExpenseRequest>? Expenses { get; set; }
         public List<DocumentRequest>? Documents { get; set; }
 
+        [SwaggerIgnore]
         public UserClaim? UserClaim { get; set; }
     }
 }

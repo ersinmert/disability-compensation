@@ -2,6 +2,7 @@
 using DisabilityCompensation.Shared.Dtos.Bases;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace DisabilityCompensation.Application.Commands.Compensations
 {
@@ -14,6 +15,7 @@ namespace DisabilityCompensation.Application.Commands.Compensations
         public bool HasCaregiver { get; set; }
         public int TemporaryDisabilityDay { get; set; }
 
+        [SwaggerIgnore]
         public UserClaim? UserClaim { get; set; }
     }
 }

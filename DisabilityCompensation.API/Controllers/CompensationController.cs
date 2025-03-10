@@ -38,9 +38,8 @@ namespace DisabilityCompensation.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm][FromBody] AddCompensationCommand request)
+        public async Task<IActionResult> Add([FromForm] AddCompensationCommand request)
         {
-            var files = Request.Form.Files;
             request.UserClaim = User.GetClaims();
             var response = await _mediator.Send(request);
             return Ok(response);
